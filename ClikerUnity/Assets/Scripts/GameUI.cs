@@ -11,10 +11,10 @@ public class GameUI : MonoBehaviour
     public GameObject PauseButton, ContinueButton, PausePanel;
     public Text AllTicketText, TicketOfSecondText;
 
-    private float currentTimer, timeToStart;
-    SaveDataBase DataBase;
+    private float currentTimer, timeToStart = 1;
     [SerializeField] int Ticket = 0, TicketOfSecond = 0, GettingTickets = 1;
 
+    SaveDataBase DataBase;
     private const string PATH = @"Assets\Resources\DataBase.txt";
     // Минимально жизнеспособный продукт (англ. minimum viable product, MVP) — продукт, обладающий минимальными, но достаточными для удовлетворения первых потребителей функциями.
     void Start()
@@ -24,17 +24,16 @@ public class GameUI : MonoBehaviour
         if (File.Exists(PATH) == false)
         {
             File.Create(PATH);
-            SaveVolToJSON();
+            SaveDataToJSON();
         }
         else
         {
-            LoadVolFromJSON();
+            LoadDataFromJSON();
         }
     }
     // Update is called once per frame
     void Update()
     {
-        SaveVolToJSON();
         if (TicketOfSecond > 0)
         {
             currentTimer -= Time.deltaTime;
@@ -99,14 +98,14 @@ public class GameUI : MonoBehaviour
         TicketOfSecondText.text = $"T/S: {TicketOfSecond}";
         AllTicketText.text = $"Ticket: {Ticket}";
     }
-    public void LoadVolFromJSON()
+    public void LoadDataFromJSON()
     {
         string jsonStr = File.ReadAllText(PATH);
         DataBase = JsonUtility.FromJson<SaveDataBase>(jsonStr);
 
-        Ticket = DataBase.Tickets;
-        TicketOfSecond = DataBase.TicketsOfSecond;
-        GettingTickets = DataBase.GettingTickets;
+        Ticket = DataBase.SaveDataTicket;
+        TicketOfSecond = DataBase.SaveDataTicketsOfSecond;
+        GettingTickets = DataBase.SaveDataGettingTicket;
 
         //AudioMixer.SetFloat("MainMusic", audioSetting.MusicVolum);
         //AudioMixer.SetFloat("VFX", audioSetting.FVXVolum);
@@ -118,7 +117,7 @@ public class GameUI : MonoBehaviour
         //ToggleVFX.isOn = audioSetting.ToggleVFX;
     }
 
-    public void SaveVolToJSON()
+    public void SaveDataToJSON()
     {
         //audioSetting.MusicVolum = SliderMusic.value;
         //audioSetting.FVXVolum = SliderVFX.value;
@@ -126,9 +125,9 @@ public class GameUI : MonoBehaviour
         //audioSetting.ToggleMusic = ToggleMusic.isOn;
         //audioSetting.ToggleVFX = ToggleVFX.isOn;
 
-        DataBase.Tickets = Ticket;
-        DataBase.TicketsOfSecond = TicketOfSecond;
-        DataBase.GettingTickets = GettingTickets;
+        DataBase.SaveDataTicket = Ticket;
+        DataBase.SaveDataTicketsOfSecond = TicketOfSecond;
+        DataBase.SaveDataGettingTicket = GettingTickets;
 
         string volumeStr = JsonUtility.ToJson(DataBase);
         File.WriteAllText(PATH, volumeStr);

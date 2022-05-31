@@ -1,4 +1,9 @@
-﻿public class SaveDataBase
+﻿using System;
+
+[Serializable]
+public class SaveDataBase
 {
-    public int Tickets, TicketsOfSecond, GettingTickets;
+    public int SaveDataTicket;
+    public int SaveDataTicketsOfSecond;
+    public int SaveDataGettingTicket;
 }
