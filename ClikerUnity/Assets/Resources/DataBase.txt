@@ -1,1 +1,1 @@
-{"SaveDataTicket":28,"SaveDataTicketsOfSecond":1,"SaveDataGettingTicket":3}
+{"SaveDataTicket":0,"SaveDataTicketsOfSecond":0,"SaveDataGettingTicket":1}
