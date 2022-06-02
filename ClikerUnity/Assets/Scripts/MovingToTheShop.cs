@@ -19,7 +19,7 @@ public class MovingToTheShop : MonoBehaviour
     private void OnMouseDown()
     {
         DarkPanelObj.SetActive(true);
-        DarkPanelObj.GetComponent<CanvasGroup>().DOFade(endValue: 1, 2f)
+        DarkPanelObj.GetComponent<CanvasGroup>().DOFade(endValue: 1, 1f)
             .OnComplete(() => 
             {
                 SceneManager.LoadScene(3);

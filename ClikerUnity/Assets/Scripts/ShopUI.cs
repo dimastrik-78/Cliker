@@ -9,7 +9,7 @@ public class ShopUI : MonoBehaviour
 {
     public GameObject PauseButton, ContinueButton, ShopPanel, PausePanel, DarkPanelObj;
     public Text AllTicketText;
-    private int WhatScreen;
+    private int _whatScreen;
     [SerializeField] int Ticket = 0, GettingTickets = 1;
     void Start()
     {
@@ -35,35 +35,35 @@ public class ShopUI : MonoBehaviour
     }
     public void MovingToSlotMachine()
     {
-        WhatScreen = 2;
-        AppearanceDarkScreen();
+        _whatScreen = 2;
+        SceneTransition();
     }
     public void MovingToHall()
     {
-        WhatScreen = 1;
-        AppearanceDarkScreen();
+        _whatScreen = 1;
+        SceneTransition();
     }
     public void MovingToMainMenu()
     {
-        WhatScreen = 0;
-        AppearanceDarkScreen();
+        _whatScreen = 0;
+        SceneTransition();
     }
     public void MovingToGalary()
     {
-        WhatScreen = 4;
-        AppearanceDarkScreen();
+        _whatScreen = 4;
+        SceneTransition();
     }
     private void UpdateText()
     {
         AllTicketText.text = $"Ticket: {Ticket}";
     }
-    private void AppearanceDarkScreen()
+    private void SceneTransition()
     {
         DarkPanelObj.SetActive(true);
-        DarkPanelObj.GetComponent<CanvasGroup>().DOFade(endValue: 1, 2f)
+        DarkPanelObj.GetComponent<CanvasGroup>().DOFade(endValue: 1, 1f)
             .OnComplete(() =>
             {
-                SceneManager.LoadScene(WhatScreen);
+                SceneManager.LoadScene(_whatScreen);
                 DarkPanelObj.GetComponent<CanvasGroup>().DOKill();
             });
     }

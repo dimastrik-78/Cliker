@@ -8,7 +8,7 @@ using DG.Tweening;
 public class GaleryUI : MonoBehaviour
 {
     public GameObject DarkPanelObj;
-    private int WhatScreen;
+    private int _whatScreen;
     void Start()
     {
         
@@ -19,21 +19,21 @@ public class GaleryUI : MonoBehaviour
     }
     public void Hall()
     {
-        WhatScreen = 1;
-        AppearanceDarkScreen();
+        _whatScreen = 1;
+        SceneTransition();
     }
     public void MainMenu()
     {
-        WhatScreen = 0;
-        AppearanceDarkScreen();
+        _whatScreen = 0;
+        SceneTransition();
     }
-    private void AppearanceDarkScreen()
+    private void SceneTransition()
     {
         DarkPanelObj.SetActive(true);
-        DarkPanelObj.GetComponent<CanvasGroup>().DOFade(endValue: 1, 2f)
+        DarkPanelObj.GetComponent<CanvasGroup>().DOFade(endValue: 1, 1f)
             .OnComplete(() =>
             {
-                SceneManager.LoadScene(WhatScreen);
+                SceneManager.LoadScene(_whatScreen);
                 DarkPanelObj.GetComponent<CanvasGroup>().DOKill();
             });
     }

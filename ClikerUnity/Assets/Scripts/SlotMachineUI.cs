@@ -7,13 +7,13 @@ using DG.Tweening;
 
 public class SlotMachineUI : MonoBehaviour
 {
-    public GameObject PauseButton, ContinueButton, GamePanel, PausePanel, DarkPanelObj;
-    public Text AllTicketText;
-    private int WhatScreen;
-    [SerializeField] int Ticket = 0, GettingTickets = 1;
+    public GameObject PauseButton, ContinueButton, UpgradeButton, GamePanel, PausePanel, DarkPanelObj;
+    public Text AllTicketText, UpgradeText;
+    private int _whatScreen;
+    [SerializeField] int Ticket = 0, GettingTickets = 1, Level = 1;
     void Start()
     {
-        
+        UpdateText();
     }
     void Update()
     {
@@ -26,12 +26,46 @@ public class SlotMachineUI : MonoBehaviour
     }
     public void UpgradeClicks()
     {
-        if (Ticket >= 25)
+        switch (Level)
         {
-            Ticket -= 25;
-            GettingTickets++;
-            UpdateText();
+            case 1:
+                if (Ticket >= 45)
+                {
+                    Ticket -= 45;
+                    GettingTickets++;
+                    Level++;
+                    UpgradeText.text = $"Upgrade ({Level} -> {Level + 1}) \n 450 Ticket";
+                }
+                break;
+            case 2:
+                if (Ticket >= 450)
+                {
+                    Ticket -= 450;
+                    GettingTickets++;
+                    Level++;
+                    UpgradeText.text = $"Upgrade ({Level} -> {Level + 1}) \n 1350 Ticket";
+                }
+                break;
+            case 3:
+                if (Ticket >= 1350)
+                {
+                    Ticket -= 1350;
+                    GettingTickets++;
+                    Level++;
+                    UpgradeText.text = $"Upgrade ({Level} -> {Level + 1}) \n 1800 Ticket";
+                }
+                break;
+            case 4:
+                if (Ticket >= 1800)
+                {
+                    Ticket -= 1800;
+                    GettingTickets++;
+                    Level++;
+                    UpgradeText.text = $"Upgrade (Max)";
+                }
+                break;
         }
+        UpdateText();
     }
     public void PauseGame()
     {
@@ -49,35 +83,35 @@ public class SlotMachineUI : MonoBehaviour
     }
     public void MovingToTheShop()
     {
-        WhatScreen = 3;
-        AppearanceDarkScreen();
+        _whatScreen = 3;
+        SceneTransition();
     }
     public void MovingToHall()
     {
-        WhatScreen = 1;
-        AppearanceDarkScreen();
+        _whatScreen = 1;
+        SceneTransition();
     }
     public void MovingToMainMenu()
     {
-        WhatScreen = 0;
-        AppearanceDarkScreen();
+        _whatScreen = 0;
+        SceneTransition();
     }
     public void MovingToGalary()
     {
-        WhatScreen = 4;
-        AppearanceDarkScreen();
+        _whatScreen = 4;
+        SceneTransition();
     }
     private void UpdateText()
     {
         AllTicketText.text = $"Ticket: {Ticket}";
     }
-    private void AppearanceDarkScreen()
+    private void SceneTransition()
     {
         DarkPanelObj.SetActive(true);
-        DarkPanelObj.GetComponent<CanvasGroup>().DOFade(endValue: 1, 2f)
+        DarkPanelObj.GetComponent<CanvasGroup>().DOFade(endValue: 1, 1f)
             .OnComplete(() =>
             {
-                SceneManager.LoadScene(WhatScreen);
+                SceneManager.LoadScene(_whatScreen);
                 DarkPanelObj.GetComponent<CanvasGroup>().DOKill();
             });
     }

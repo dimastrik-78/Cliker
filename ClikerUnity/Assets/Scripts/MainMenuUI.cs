@@ -8,7 +8,7 @@ using DG.Tweening;
 public class MainMenuUI : MonoBehaviour
 {
     public GameObject MainMenuPanel, StartNewGamePanel, SettingsPanel, DarkPanelObj;
-    private int WhatScreen;
+    private int _whatScreen;
     void Start()
     {
         //if (File.Exists(PATH) == false)
@@ -23,8 +23,8 @@ public class MainMenuUI : MonoBehaviour
     }
     public void PlayGame()
     {
-        WhatScreen = 1;
-        AppearanceDarkScreen();
+        _whatScreen = 1;
+        SceneTransition();
     }
     public void StartNewGame()
     {
@@ -36,9 +36,9 @@ public class MainMenuUI : MonoBehaviour
     }
     public void YesStartNewGame()
     {
-        WhatScreen = 1;
+        _whatScreen = 1;
         //Добавить переменные, которые будут хранить начальное значение всех переменных чтобы обнулять игру, сделать логику сброса прогресса
-        AppearanceDarkScreen();
+        SceneTransition();
     }
     public void Settings()
     {
@@ -57,16 +57,16 @@ public class MainMenuUI : MonoBehaviour
     }
     public void MovingToGalary()
     {
-        WhatScreen = 4;
-        AppearanceDarkScreen();
+        _whatScreen = 4;
+        SceneTransition();
     }
-    private void AppearanceDarkScreen()
+    private void SceneTransition()
     {
         DarkPanelObj.SetActive(true);
-        DarkPanelObj.GetComponent<CanvasGroup>().DOFade(endValue: 1, 2f)
+        DarkPanelObj.GetComponent<CanvasGroup>().DOFade(endValue: 1, 1f)
             .OnComplete(() =>
             {
-                SceneManager.LoadScene(WhatScreen);
+                SceneManager.LoadScene(_whatScreen);
                 DarkPanelObj.GetComponent<CanvasGroup>().DOKill();
             });
     }

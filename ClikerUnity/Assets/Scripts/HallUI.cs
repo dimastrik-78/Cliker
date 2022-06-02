@@ -16,7 +16,7 @@ public class HallUI : MonoBehaviour
     [SerializeField] int Ticket = 0, GettingTickets = 1;
 
     SaveDataBase DataBase;
-    private int WhatScreen;
+    private int _whatScreen;
     private const string PATH = @"Assets\Resources\DataBase.txt";
     void Start()
     {
@@ -54,21 +54,21 @@ public class HallUI : MonoBehaviour
     }
     public void MovingToMainMenu()
     {
-        WhatScreen = 0;
-        AppearanceDarkScreen();
+        _whatScreen = 0;
+        SceneTransition();
     }
     public void MovingToGalary()
     {
-        WhatScreen = 4;
-        AppearanceDarkScreen();
+        _whatScreen = 4;
+        SceneTransition();
     }
-    private void AppearanceDarkScreen()
+    private void SceneTransition()
     {
         DarkPanelObj.SetActive(true);
-        DarkPanelObj.GetComponent<CanvasGroup>().DOFade(endValue: 1, 2f)
+        DarkPanelObj.GetComponent<CanvasGroup>().DOFade(endValue: 1, 1f)
             .OnComplete(() =>
             {
-                SceneManager.LoadScene(WhatScreen);
+                SceneManager.LoadScene(_whatScreen);
                 DarkPanelObj.GetComponent<CanvasGroup>().DOKill();
             });
     }
@@ -109,9 +109,3 @@ public class HallUI : MonoBehaviour
         File.WriteAllText(PATH, volumeStr);
     }
 }
-//currentTimer -= Time.deltaTime;
-//line.fillAmount = 1 - (currentTimer / timeToStart);
-//if (currentTimer < 0)
-//{
-//    currentTimer = timeToStart;
-//}
