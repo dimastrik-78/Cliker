@@ -11,25 +11,20 @@ public class HallUI : MonoBehaviour
 {
     public GameObject PauseButton, ContinueButton, PausePanel, DarkPanelObj, TravelAreaToShop, TravelAreaToSlotMachine, DarkPanel;
     public Text AllTicketText;
+    public GameTimer GameTimer;
 
     //private float _currentTimer = 1, _timeToStart = 1;
-    [SerializeField] int Ticket = 0, GettingTickets = 1;
+    [SerializeField] int Ticket = 0;
+
+    private int _whatScreen;
 
     SaveDataBase DataBase;
-    private int _whatScreen;
     private const string PATH = @"Assets\Resources\DataBase.txt";
     void Start()
     {
         DataBase = new SaveDataBase();
-        //if (File.Exists(PATH) == false)
-        //{
-        //    File.Create(PATH);
-        //    SaveDataToJSON();
-        //}
-        //else
-        //{
-        //    LoadDataFromJSON();
-        //}
+        LoadDataFromJSON();
+        UpdateText();
     }
     // Update is called once per frame
     void Update()
@@ -38,7 +33,7 @@ public class HallUI : MonoBehaviour
     }
     public void PauseGame()
     {
-        //Time.timeScale = 0;
+        GameTimer.Pause = true;
         PausePanel.SetActive(true);
         PauseButton.SetActive(false);
         TravelAreaToShop.GetComponent<BoxCollider>().enabled = false;
@@ -46,11 +41,11 @@ public class HallUI : MonoBehaviour
     }
     public void ContinueGame()
     {
+        GameTimer.Pause = false;
         TravelAreaToShop.GetComponent<BoxCollider>().enabled = true;
         TravelAreaToSlotMachine.GetComponent<BoxCollider>().enabled = true;
         PausePanel.SetActive(false);
         PauseButton.SetActive(true);
-        //Time.timeScale = 1;
     }
     public void MovingToMainMenu()
     {
@@ -64,6 +59,7 @@ public class HallUI : MonoBehaviour
     }
     private void SceneTransition()
     {
+        GameTimer.SaveDataToJSON();
         DarkPanelObj.SetActive(true);
         DarkPanelObj.GetComponent<CanvasGroup>().DOFade(endValue: 1, 1f)
             .OnComplete(() =>
@@ -81,8 +77,7 @@ public class HallUI : MonoBehaviour
         string jsonStr = File.ReadAllText(PATH);
         DataBase = JsonUtility.FromJson<SaveDataBase>(jsonStr);
 
-        Ticket = DataBase.SaveDataTicket;
-        GettingTickets = DataBase.SaveDataGettingTicket;
+        Ticket = DataBase.DataTicket;
 
         //AudioMixer.SetFloat("MainMusic", audioSetting.MusicVolum);
         //AudioMixer.SetFloat("VFX", audioSetting.FVXVolum);
@@ -102,8 +97,11 @@ public class HallUI : MonoBehaviour
         //audioSetting.ToggleMusic = ToggleMusic.isOn;
         //audioSetting.ToggleVFX = ToggleVFX.isOn;
 
-        DataBase.SaveDataTicket = Ticket;
-        DataBase.SaveDataGettingTicket = GettingTickets;
+        //DataBase.DataLeveSlotMachine = NewLeveSlotMachine;
+        //DataBase.DataTicket = Ticket;
+        //DataBase.DataGettingTicket = GettingTickets;
+        //DataBase.DataGaemTimeSecond = NewGaemTimeSecond;
+        //DataBase.DataGameTimeMinute = NewGameTimeMinute;
 
         string volumeStr = JsonUtility.ToJson(DataBase);
         File.WriteAllText(PATH, volumeStr);

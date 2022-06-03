@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 public class MovingToTheSlotMachine : MonoBehaviour
 {
     public GameObject DarkPanelObj;
+    public GameTimer GameTimer;
     void Start()
     {
         
@@ -18,6 +19,8 @@ public class MovingToTheSlotMachine : MonoBehaviour
     }
     private void OnMouseDown()
     {
+        GameTimer.SaveDataToJSON();
+
         DarkPanelObj.SetActive(true);
         DarkPanelObj.GetComponent<CanvasGroup>().DOFade(endValue: 1, 1f)
             .OnComplete(() => 

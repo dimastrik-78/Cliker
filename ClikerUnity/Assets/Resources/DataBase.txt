@@ -1,1 +1,1 @@
-{"SaveDataTicket":0,"SaveDataTicketsOfSecond":0,"SaveDataGettingTicket":1}
+{"DataVolumMusic":0.0,"DataVolumEffect":0.0,"DataGameFirstStart":false,"DataGameStart":true,"DataPlayerPlayed":false,"DataGoodEnd":false,"DataBadEnd":false,"DataLeveSlotMachine":4,"DataTicket":1301,"DataGettingTicket":4,"DataGaemTimeSecond":20,"DataGameTimeMinute":0,"DataItemIsActivated":0,"DataTimeActiveBuff":13,"HowManyActiveBuffs":1}
