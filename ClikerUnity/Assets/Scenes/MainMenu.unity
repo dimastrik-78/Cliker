@@ -439,11 +439,10 @@ MonoBehaviour:
   StartNewGamePanel: {fileID: 920602118}
   SettingsPanel: {fileID: 1693055185}
   DarkPanelObj: {fileID: 700974315}
-  NewLeveSlotMachine: 1
-  NewTicket: 0
-  NewGettingTicket: 1
-  NewGaemTimeSecond: 0
-  NewGameTimeMinute: 5
+  allItem: []
+  itemNumber: 0
+  FirstStartGame: 1
+  AudioMixer: {fileID: 24100000, guid: e30c521576c0229479839f2eaef41406, type: 2}
 --- !u!1 &509198186
 GameObject:
   m_ObjectHideFlags: 0
@@ -3010,7 +3009,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1758561647}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.5138462, y: 6.462665, z: 1.6882371}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -3034,7 +3033,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1764115486
 RectTransform:
   m_ObjectHideFlags: 0

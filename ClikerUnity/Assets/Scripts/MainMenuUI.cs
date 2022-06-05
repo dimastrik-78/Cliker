@@ -7,17 +7,22 @@ using UnityEditor;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using DG.Tweening;
+using UnityEngine.Audio;
 
 public class MainMenuUI : MonoBehaviour
 {
     public GameObject StartNewGameButton, MainMenuPanel, StartNewGamePanel, SettingsPanel, DarkPanelObj;
 
     private int _whatScreen;
+    private UnityEngine.Object[] _allItems;
+
+    [HideInInspector] public ItemSO[] allItem;
+    [HideInInspector] public int itemNumber;
 
     SaveDataBase DataBase;
-
+    [SerializeField] bool FirstStartGame;
+    [SerializeField] AudioMixer AudioMixer;
     private const string PATH = @"Assets\Resources\DataBase.txt";
-    [SerializeField] int NewGameLeveSlotMachine = 1, NewGameTicket = 0, NewGameGettingTicket = 1, NewGameTimeSecond = 0, NewGameTimeMinute = 5;
     void Start()
     {
         DataBase = new SaveDataBase();
@@ -28,7 +33,7 @@ public class MainMenuUI : MonoBehaviour
         else
         {
             LoadDataFromJSON();
-            if (DataBase.DataGameStart == true)
+            if (DataBase.DataPlayerPlayed == true)
             {
                 StartNewGameButton.SetActive(true);
             }
@@ -36,14 +41,21 @@ public class MainMenuUI : MonoBehaviour
     }
     public void PlayGame()
     {
-        if (DataBase.DataGameFirstStart == true)
+        if (FirstStartGame == true)
+            CreateNewDataToJSON();
+        if (DataBase.DataPlayerPlayed == false)
+        {
             _whatScreen = 5;
+            SaveNewDataToJSON();
+
+        }
         else _whatScreen = 1;
-        SaveNewDataToJSON();
         SceneTransition();
     }
     public void StartNewGame()
     {
+        if (FirstStartGame == true)
+            CreateNewDataToJSON();
         StartNewGamePanel.SetActive(true);
     }
     public void NoStartNewGame()
@@ -52,12 +64,14 @@ public class MainMenuUI : MonoBehaviour
     }
     public void YesStartNewGame()
     {
-        _whatScreen = 1;
+        _whatScreen = 5;
         SaveNewDataToJSON();
         SceneTransition();
     }
     public void Settings()
     {
+        if (FirstStartGame == true)
+            CreateNewDataToJSON();
         MainMenuPanel.SetActive(false);
         SettingsPanel.SetActive(true);
     }
@@ -68,6 +82,8 @@ public class MainMenuUI : MonoBehaviour
     }
     public void MovingToGalary()
     {
+        if (FirstStartGame == true)
+            CreateNewDataToJSON();
         _whatScreen = 4;
         SceneTransition();
     }
@@ -76,33 +92,63 @@ public class MainMenuUI : MonoBehaviour
         string jsonStr = File.ReadAllText(PATH);
         DataBase = JsonUtility.FromJson<SaveDataBase>(jsonStr);
 
-        //Ticket = DataBase.SaveDataTicket;
-        //GettingTickets = DataBase.SaveDataGettingTicket;
+        FirstStartGame = DataBase.DataGameFirstStart;
 
-        //AudioMixer.SetFloat("MainMusic", audioSetting.MusicVolum);
-        //AudioMixer.SetFloat("VFX", audioSetting.FVXVolum);
-
-        //SliderMusic.value = audioSetting.MusicVolum;
-        //SliderVFX.value = audioSetting.FVXVolum;
-
-        //ToggleMusic.isOn = audioSetting.ToggleMusic;
-        //ToggleVFX.isOn = audioSetting.ToggleVFX;
+        AudioMixer.SetFloat("Music", DataBase.DataVolumMusic);
+        AudioMixer.SetFloat("Effect", DataBase.DataVolumEffect);
     }
 
     public void SaveNewDataToJSON()
     {
-        //audioSetting.MusicVolum = SliderMusic.value;
-        //audioSetting.FVXVolum = SliderVFX.value;
+        _allItems = Resources.LoadAll("items", typeof(ItemSO));
 
-        //audioSetting.ToggleMusic = ToggleMusic.isOn;
-        //audioSetting.ToggleVFX = ToggleVFX.isOn;
+        DataBase.DataPlayerPlayed = false;
 
-        DataBase.DataGameStart = true;
-        DataBase.DataLeveSlotMachine = NewGameLeveSlotMachine;
-        DataBase.DataTicket = NewGameTicket;
-        DataBase.DataGettingTicket = NewGameGettingTicket;
-        DataBase.DataGaemTimeSecond = NewGameTimeSecond;
-        DataBase.DataGameTimeMinute = NewGameTimeMinute;
+        PlayerPrefs.SetInt("Ticket", 0);
+        PlayerPrefs.SetInt("Level", 1);
+        PlayerPrefs.SetInt("GettingTickets", 1);
+
+        DataBase.DataGameTimeMinute = 5;
+        DataBase.DataGameTimeSecond = 0;
+
+        DataBase.DataItemIsActivated = 0;
+        DataBase.DataTimeActiveBuff = 0;
+        DataBase.HowManyActiveBuffs = 0;
+        for (int i = 0; i < _allItems.Length; i++)
+        {
+            DataBase.ArrayActivatedItems[i] = -1;
+        }
+
+        string DataStr = JsonUtility.ToJson(DataBase);
+        File.WriteAllText(PATH, DataStr);
+    }
+    public void CreateNewDataToJSON()
+    {
+        _allItems = Resources.LoadAll("items", typeof(ItemSO));
+
+        PlayerPrefs.SetInt("Ticket", 0);
+        PlayerPrefs.SetInt("Level", 1);
+        PlayerPrefs.SetInt("GettingTickets", 1);
+
+        DataBase.DataVolumMusic = 0f;
+        DataBase.DataVolumEffect = 0f;
+
+        DataBase.DataStartStoryReceived = false;
+        DataBase.DataPlayerPlayed = false;
+        DataBase.DataGoodEndReceived = false;
+        DataBase.DataBadEndReceived = false;
+
+        DataBase.DataGameTimeMinute = 5;
+        DataBase.DataGameTimeSecond = 0;
+
+        DataBase.DataItemIsActivated = 0;
+        DataBase.DataTimeActiveBuff = 0;
+        DataBase.HowManyActiveBuffs = 0;
+        DataBase.ArrayActivatedItems = new int[_allItems.Length];
+        for (int i = 0; i < _allItems.Length; i++)
+        {
+            DataBase.ArrayActivatedItems[i] = -1;
+        }
 
         string DataStr = JsonUtility.ToJson(DataBase);
         File.WriteAllText(PATH, DataStr);

@@ -16,6 +16,6 @@ MonoBehaviour:
   _icon: {fileID: 8125315476409459658, guid: da5d7442078d75e45aa4c387ba401fc3, type: 3}
   _itemName: Energy Drink
   _itemDescription: x3 ticket per click
-  _itemCost: 200
+  _itemCost: 150
   _itemEffect: 3
   _itemTimeAction: 20

@@ -21,6 +21,6 @@ EditorBuildSettings:
     path: Assets/Scenes/Galery.unity
     guid: e74b24ecdbf5cc9418b2a9e309725f3b
   - enabled: 1
-    path: Assets/Scenes/Endings.unity
+    path: Assets/Scenes/Story.unity
     guid: ff860d108eccc4e4791942889f491419
   m_configObjects: {}

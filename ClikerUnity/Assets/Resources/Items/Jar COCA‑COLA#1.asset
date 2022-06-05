@@ -16,6 +16,6 @@ MonoBehaviour:
   _icon: {fileID: -6111273648580853678, guid: da5d7442078d75e45aa4c387ba401fc3, type: 3}
   _itemName: Jar Coca-Cola
   _itemDescription: x2 ticket per click
-  _itemCost: 300
+  _itemCost: 200
   _itemEffect: 2
   _itemTimeAction: 40

@@ -14,22 +14,17 @@ public class Volum : MonoBehaviour
     void Start()
     {
         DataBase = new SaveDataBase();
-        if (File.Exists(PATH) == true)
-        {
-            LoadDataFromJSON();
-        }
-    }
-    void Update()
-    {
-        
+        LoadDataFromJSON();
     }
     public void ChangeMusic()
     {
         AudioMixer.SetFloat("Music", SliderMusic.value);
+        SaveNewDataToJSON();
     }
     public void ChangeEffect()
     {
         AudioMixer.SetFloat("Effect", SliderEffect.value);
+        SaveNewDataToJSON();
     }
     public void LoadDataFromJSON()
     {

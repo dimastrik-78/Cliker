@@ -6,8 +6,9 @@ using UnityEngine.UI;
 
 public class TimerActiveBuff : MonoBehaviour
 {
-    public ItemPanel ItemInShop;
+    public Image Image;
     public Text TextTimer;
+    public bool Pause;
 
     [HideInInspector] public ItemSO[] item;
 
@@ -17,21 +18,18 @@ public class TimerActiveBuff : MonoBehaviour
     SaveDataBase DataBase;
     [SerializeField] int TimeActiveBuff;
     private const string PATH = @"Assets\Resources\DataBase.txt";
-    private void Start()
+    public void Start()
     {
         DataBase = new SaveDataBase();
         LoadDataFromJSON();
-    }
-    public void StartAcrive()
-    {
+        TextTimer.text = $"{TimeActiveBuff}";
         _allItems = Resources.LoadAll("items", typeof(ItemSO));
         item = new ItemSO[_allItems.Length];
         for (int i = 0; i < _allItems.Length; i++)
         {
             item[i] = (ItemSO)_allItems[i];
         }
-        TimeActiveBuff = item[ItemInShop.selectedItem].ItemTimeAction;
-        TextTimer.text = $"{TimeActiveBuff}";
+        Image.sprite = item[DataBase.DataItemIsActivated].Icon;
     }
     void Update()
     {
@@ -46,7 +44,8 @@ public class TimerActiveBuff : MonoBehaviour
         if (TimeActiveBuff < 0)
         {
             gameObject.SetActive(false);
-            ItemInShop.CountAcriveBuff--;
+            DataBase.HowManyActiveBuffs--;
+            TimeActiveBuff = 90;
             SaveDataToJSON();
         }
     }
@@ -61,7 +60,6 @@ public class TimerActiveBuff : MonoBehaviour
     public void SaveDataToJSON()
     {
         DataBase.DataTimeActiveBuff = TimeActiveBuff;
-        DataBase.HowManyActiveBuffs = ItemInShop.CountAcriveBuff;
 
         string volumeStr = JsonUtility.ToJson(DataBase);
         File.WriteAllText(PATH, volumeStr);

@@ -41,7 +41,8 @@ public class GameTimer : MonoBehaviour
             }
             if (Minute < 0)
             {
-                _whatScreen = 4;
+                _whatScreen = 5;
+                SaveDataToJSON();
                 SceneTransition();
             }
         }
@@ -52,14 +53,14 @@ public class GameTimer : MonoBehaviour
         DataBase = JsonUtility.FromJson<SaveDataBase>(jsonStr);
 
         Minute = DataBase.DataGameTimeMinute;
-        Second = DataBase.DataGaemTimeSecond;
+        Second = DataBase.DataGameTimeSecond;
 
     }
 
     public void SaveDataToJSON()
     {
         DataBase.DataGameTimeMinute = Minute;
-        DataBase.DataGaemTimeSecond = Second;
+        DataBase.DataGameTimeSecond = Second;
 
         string volumeStr = JsonUtility.ToJson(DataBase);
         File.WriteAllText(PATH, volumeStr);

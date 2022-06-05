@@ -18,5 +18,6 @@ public class ItemSO : ScriptableObject
     public string ItemName { get => _itemName; }
     public string ItemDescription { get => _itemDescription; }
     public int ItemCost { get => _itemCost; }
+    public int ItemEffect { get => _itemEffect; }
     public int ItemTimeAction { get => _itemTimeAction; }
 }

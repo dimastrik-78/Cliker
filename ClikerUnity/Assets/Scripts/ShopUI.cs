@@ -5,32 +5,41 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using DG.Tweening;
+using UnityEngine.Audio;
 
 public class ShopUI : MonoBehaviour
 {
     public AudioSource Audio;
-    public GameObject PauseButton, ContinueButton, ShopPanel, PausePanel, DarkPanelObj;
+    public GameObject PauseButton, ContinueButton, ShopPanel, PausePanel, DarkPanelObj, ActiveItem;
     public Text AllTicketText;
     public GameTimer GameTimer;
+    public TimerActiveBuff TimerActiveBuff;
+
+    [HideInInspector] public ItemSO[] item;
 
     private int _whatScreen;
 
-    SaveDataBase DataBase;
-    [SerializeField] int Ticket = 0;
+    SaveDataBase DataBase; 
+    [SerializeField] AudioMixer AudioMixer;
+    [SerializeField] public int Ticket;
     private const string PATH = @"Assets\Resources\DataBase.txt";
     void Start()
     {
+        if (PlayerPrefs.HasKey("Ticket"))
+            Ticket = PlayerPrefs.GetInt("Ticket");
+
         DataBase = new SaveDataBase();
         LoadDataFromJSON();
         UpdateText();
-    }
-    void Update()
-    {
-        
+        if (DataBase.HowManyActiveBuffs > 0)
+        {
+            ActiveItem.SetActive(true);
+        }
     }
     public void PauseGame()
     {
         GameTimer.Pause = true;
+        TimerActiveBuff.Pause = true;
         PausePanel.SetActive(true);
         ShopPanel.SetActive(false);
         PauseButton.SetActive(false);
@@ -38,6 +47,7 @@ public class ShopUI : MonoBehaviour
     public void ContinueGame()
     {
         GameTimer.Pause = false;
+        TimerActiveBuff.Pause = false;
         PausePanel.SetActive(false);
         ShopPanel.SetActive(true);
         PauseButton.SetActive(true);
@@ -57,51 +67,23 @@ public class ShopUI : MonoBehaviour
         _whatScreen = 0;
         SceneTransition();
     }
-    public void MovingToGalary()
-    {
-        _whatScreen = 4;
-        SceneTransition();
-    }
     public void LoadDataFromJSON()
     {
         string jsonStr = File.ReadAllText(PATH);
         DataBase = JsonUtility.FromJson<SaveDataBase>(jsonStr);
 
-        Ticket = DataBase.DataTicket;
-
-        //AudioMixer.SetFloat("MainMusic", audioSetting.MusicVolum);
-        //AudioMixer.SetFloat("VFX", audioSetting.FVXVolum);
-
-        //SliderMusic.value = audioSetting.MusicVolum;
-        //SliderVFX.value = audioSetting.FVXVolum;
-
-        //ToggleMusic.isOn = audioSetting.ToggleMusic;
-        //ToggleVFX.isOn = audioSetting.ToggleVFX;
+        AudioMixer.SetFloat("Music", DataBase.DataVolumMusic);
+        AudioMixer.SetFloat("Effect", DataBase.DataVolumEffect);
     }
-
-    public void SaveDataToJSON()
+    public void UpdateText()
     {
-        //audioSetting.MusicVolum = SliderMusic.value;
-        //audioSetting.FVXVolum = SliderVFX.value;
-
-        //audioSetting.ToggleMusic = ToggleMusic.isOn;
-        //audioSetting.ToggleVFX = ToggleVFX.isOn;
-
-        //DataBase.DataLeveSlotMachine = NewLeveSlotMachine;
-        DataBase.DataTicket = Ticket;
-        //DataBase.DataGettingTicket = GettingTickets;
-        //DataBase.DataGaemTimeSecond = NewGaemTimeSecond;
-        //DataBase.DataGameTimeMinute = NewGameTimeMinute;
-
-        string volumeStr = JsonUtility.ToJson(DataBase);
-        File.WriteAllText(PATH, volumeStr);
-    }
-    private void UpdateText()
-    {
+        PlayerPrefs.SetInt("Ticket", Ticket);
         AllTicketText.text = $"Ticket: {Ticket}";
     }
     private void SceneTransition()
     {
+        PlayerPrefs.Save();
+        GameTimer.SaveDataToJSON();
         DarkPanelObj.SetActive(true);
         DarkPanelObj.GetComponent<CanvasGroup>().DOFade(endValue: 1, 1f)
             .OnComplete(() =>

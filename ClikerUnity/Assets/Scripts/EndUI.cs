@@ -10,45 +10,33 @@ public class EndUI : MonoBehaviour
 {
     public GameObject StartGameImg, BadEndImg, GoodEndImg;
 
+    private int Ticket;
+
     SaveDataBase DataBase;
-    //[SerializeField]
+
     private const string PATH = @"Assets\Resources\DataBase.txt";
     void Start()
     {
-        DataBase = new SaveDataBase();
+        if (PlayerPrefs.HasKey("Ticket"))
+            Ticket = PlayerPrefs.GetInt("Ticket");
 
-    }
-    void Update() //DataGameFirstStart
-    {
-        
+        DataBase = new SaveDataBase();
+        LoadDataFromJSON();
+
+        if (DataBase.DataPlayerPlayed == false)
+        {
+            StartGameImg.SetActive(true);
+        }
+        if (Ticket < 1500 && DataBase.DataGameTimeMinute <= 0)
+        {
+            BadEndImg.SetActive(true);
+        }
+        else if (Ticket >= 1500 && DataBase.DataGameTimeMinute <= 0)
+            GoodEndImg.SetActive(true);
     }
     public void LoadDataFromJSON()
     {
         string jsonStr = File.ReadAllText(PATH);
         DataBase = JsonUtility.FromJson<SaveDataBase>(jsonStr);
-
-        //Ticket = DataBase.SaveDataTicket;
-        //GettingTickets = DataBase.SaveDataGettingTicket;
-
-        //AudioMixer.SetFloat("MainMusic", audioSetting.MusicVolum);
-        //AudioMixer.SetFloat("VFX", audioSetting.FVXVolum);
-
-        //SliderMusic.value = audioSetting.MusicVolum;
-        //SliderVFX.value = audioSetting.FVXVolum;
-
-        //ToggleMusic.isOn = audioSetting.ToggleMusic;
-        //ToggleVFX.isOn = audioSetting.ToggleVFX;
-    }
-
-    public void SaveNewDataToJSON()
-    {
-        //audioSetting.MusicVolum = SliderMusic.value;
-        //audioSetting.FVXVolum = SliderVFX.value;
-
-        //audioSetting.ToggleMusic = ToggleMusic.isOn;
-        //audioSetting.ToggleVFX = ToggleVFX.isOn;
-
-        string DataStr = JsonUtility.ToJson(DataBase);
-        File.WriteAllText(PATH, DataStr);
     }
 }

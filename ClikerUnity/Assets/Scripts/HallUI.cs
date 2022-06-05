@@ -9,31 +9,35 @@ using DG.Tweening;
 
 public class HallUI : MonoBehaviour
 {
-    public GameObject PauseButton, ContinueButton, PausePanel, DarkPanelObj, TravelAreaToShop, TravelAreaToSlotMachine, DarkPanel;
+    public GameObject PauseButton, ContinueButton, PausePanel, DarkPanelObj, TravelAreaToShop, TravelAreaToSlotMachine, DarkPanel, ActiveItem;
     public Text AllTicketText;
     public GameTimer GameTimer;
-
-    //private float _currentTimer = 1, _timeToStart = 1;
-    [SerializeField] int Ticket = 0;
-
+    public TimerActiveBuff TimerActiveBuff;
+    
     private int _whatScreen;
 
     SaveDataBase DataBase;
+    [SerializeField] int Ticket = 0;
+    [SerializeField] AudioMixer AudioMixer;
     private const string PATH = @"Assets\Resources\DataBase.txt";
     void Start()
     {
+        if (PlayerPrefs.HasKey("Ticket"))
+            Ticket = PlayerPrefs.GetInt("Ticket");
+
         DataBase = new SaveDataBase();
         LoadDataFromJSON();
         UpdateText();
-    }
-    // Update is called once per frame
-    void Update()
-    {
-        
+
+        if (DataBase.HowManyActiveBuffs > 0)
+        {
+            ActiveItem.SetActive(true);
+        }
     }
     public void PauseGame()
     {
         GameTimer.Pause = true;
+        TimerActiveBuff.Pause = true;
         PausePanel.SetActive(true);
         PauseButton.SetActive(false);
         TravelAreaToShop.GetComponent<BoxCollider>().enabled = false;
@@ -42,6 +46,7 @@ public class HallUI : MonoBehaviour
     public void ContinueGame()
     {
         GameTimer.Pause = false;
+        TimerActiveBuff.Pause = false;
         TravelAreaToShop.GetComponent<BoxCollider>().enabled = true;
         TravelAreaToSlotMachine.GetComponent<BoxCollider>().enabled = true;
         PausePanel.SetActive(false);
@@ -52,22 +57,6 @@ public class HallUI : MonoBehaviour
         _whatScreen = 0;
         SceneTransition();
     }
-    public void MovingToGalary()
-    {
-        _whatScreen = 4;
-        SceneTransition();
-    }
-    private void SceneTransition()
-    {
-        GameTimer.SaveDataToJSON();
-        DarkPanelObj.SetActive(true);
-        DarkPanelObj.GetComponent<CanvasGroup>().DOFade(endValue: 1, 1f)
-            .OnComplete(() =>
-            {
-                SceneManager.LoadScene(_whatScreen);
-                DarkPanelObj.GetComponent<CanvasGroup>().DOKill();
-            });
-    }
     private void UpdateText()
     {
         AllTicketText.text = $"Ticket: {Ticket}";
@@ -77,33 +66,19 @@ public class HallUI : MonoBehaviour
         string jsonStr = File.ReadAllText(PATH);
         DataBase = JsonUtility.FromJson<SaveDataBase>(jsonStr);
 
-        Ticket = DataBase.DataTicket;
-
-        //AudioMixer.SetFloat("MainMusic", audioSetting.MusicVolum);
-        //AudioMixer.SetFloat("VFX", audioSetting.FVXVolum);
-
-        //SliderMusic.value = audioSetting.MusicVolum;
-        //SliderVFX.value = audioSetting.FVXVolum;
-
-        //ToggleMusic.isOn = audioSetting.ToggleMusic;
-        //ToggleVFX.isOn = audioSetting.ToggleVFX;
+        AudioMixer.SetFloat("Music", DataBase.DataVolumMusic);
+        AudioMixer.SetFloat("Effect", DataBase.DataVolumEffect);
     }
-
-    public void SaveDataToJSON()
+    private void SceneTransition()
     {
-        //audioSetting.MusicVolum = SliderMusic.value;
-        //audioSetting.FVXVolum = SliderVFX.value;
-
-        //audioSetting.ToggleMusic = ToggleMusic.isOn;
-        //audioSetting.ToggleVFX = ToggleVFX.isOn;
-
-        //DataBase.DataLeveSlotMachine = NewLeveSlotMachine;
-        //DataBase.DataTicket = Ticket;
-        //DataBase.DataGettingTicket = GettingTickets;
-        //DataBase.DataGaemTimeSecond = NewGaemTimeSecond;
-        //DataBase.DataGameTimeMinute = NewGameTimeMinute;
-
-        string volumeStr = JsonUtility.ToJson(DataBase);
-        File.WriteAllText(PATH, volumeStr);
+        PlayerPrefs.Save();
+        GameTimer.SaveDataToJSON();
+        DarkPanelObj.SetActive(true);
+        DarkPanelObj.GetComponent<CanvasGroup>().DOFade(endValue: 1, 1f)
+            .OnComplete(() =>
+            {
+                SceneManager.LoadScene(_whatScreen);
+                DarkPanelObj.GetComponent<CanvasGroup>().DOKill();
+            });
     }
 }
