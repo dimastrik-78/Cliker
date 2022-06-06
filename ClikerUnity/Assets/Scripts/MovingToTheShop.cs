@@ -8,14 +8,6 @@ public class MovingToTheShop : MonoBehaviour
 {
     public GameObject DarkPanelObj;
     public GameTimer GameTimer;
-    void Start()
-    {
-        
-    }
-    void Update()
-    {
-        
-    }
     private void OnMouseDown()
     {
         GameTimer.SaveDataToJSON();

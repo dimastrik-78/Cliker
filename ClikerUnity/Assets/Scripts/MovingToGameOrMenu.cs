@@ -31,10 +31,6 @@ public class MovingToGameOrMenu : MonoBehaviour
             DataBase.DataPlayerPlayed = false;
         }
     }
-    void Update()
-    {
-        
-    }
     public void LoadDataFromJSON()
     {
         string jsonStr = File.ReadAllText(PATH);

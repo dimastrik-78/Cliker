@@ -26,10 +26,6 @@ public class GaleryUI : MonoBehaviour
         if (DataBase.DataGoodEndReceived == true)
             GoodEnd.SetActive(false);
     }
-    void Update()
-    {
-        
-    }
     public void Hall()
     {
         _whatScreen = 1;
@@ -44,8 +40,6 @@ public class GaleryUI : MonoBehaviour
     {
         string jsonStr = File.ReadAllText(PATH);
         DataBase = JsonUtility.FromJson<SaveDataBase>(jsonStr);
-
-        
     }
     private void SceneTransition()
     {
